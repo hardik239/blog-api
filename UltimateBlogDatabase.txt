@@ -1,0 +1,36 @@
+1   
+    User
+        username
+        email
+        password
+        profilePic
+        myPosts [(PostId)]
+        savedPosts [(PostId)]
+        likedPosts [(PostId)]
+        created at
+        updated at
+
+2
+    Post
+        title
+        image
+        description
+        created at
+        updated at
+        author (UserId)
+        comments [(CommentsId)]
+        category [(CategoriesId)]
+	
+3   
+    Comments
+        comment
+        author (UserId)
+        reply's [(CommentsId)]
+        created at
+        updated at
+	
+4   
+    Categories
+        name ['Technology','Travel','Fashion','Food','Music','LifeStyle','Fitness','Sports','News','Movie','Personal','Bussiness','Gaming']
+        created at
+        updated at

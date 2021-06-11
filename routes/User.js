@@ -17,7 +17,7 @@ const signToken = (userID) => {
 };
 
 userRouter.post("/register", (req, res) => {
-  const { username, password, email } = req.body;
+  const { name: username, password, email } = req.body;
 
   User.findOne({ username }, (err, user) => {
     if (err)
@@ -27,29 +27,23 @@ userRouter.post("/register", (req, res) => {
           msgError: true
         }
       });
-    if (user)
-      res.status(400).json({
-        message: { msgBody: "Username is already taken", msgError: true }
-      });
-    else {
-      const newUser = new User({ username, password, email });
-      newUser.save((err) => {
-        if (err)
-          res.status(500).json({
-            message: {
-              msgBody: "Something Went Wrong..Error has occured",
-              msgError: true
-            }
-          });
-        else
-          res.status(201).json({
-            message: {
-              msgBody: "Account successfully created",
-              msgError: false
-            }
-          });
-      });
-    }
+    const newUser = new User({ username, password, email });
+    newUser.save((err) => {
+      if (err)
+        res.status(500).json({
+          message: {
+            msgBody: "Something Went Wrong..Error has occured",
+            msgError: true
+          }
+        });
+      else
+        res.status(201).json({
+          message: {
+            msgBody: "Account successfully created",
+            msgError: false
+          }
+        });
+    });
   });
 });
 
@@ -60,10 +54,10 @@ userRouter.post(
     if (req.isAuthenticated()) {
       const { _id, username, email } = req.user;
       const token = signToken(_id);
-      res.cookie("access_token", token, { httpOnly: true, sameSite: true });
+      // res.cookie("access_token", token, { httpOnly: true, sameSite: true });
       res
         .status(200)
-        .json({ isAuthenticated: true, user: { username, email } });
+        .json({ isAuthenticated: true, user: { username, email }, token });
     }
   }
 );
@@ -77,13 +71,30 @@ userRouter.get(
   }
 );
 
-userRouter.get(
+userRouter.post(
   "/authenticated",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    console.log(req.user + "jj");
     const { username, email } = req.user;
     res.status(200).json({ isAuthenticated: true, user: { username, email } });
   }
 );
+
+userRouter.post("/userexist", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.exists({ email });
+
+    if (user) {
+      return res.status(200).json({ info: "User Exits" });
+    } else {
+      return res.status(200).json({ success: "User Does not Exits" });
+    }
+  } catch (error) {
+    return res.status(200).json({ error: "Something Went Wrong..." });
+  }
+});
 
 module.exports = userRouter;

@@ -7,7 +7,7 @@
     "dev": "nodemon index.js",
     "start": "node swagger.js",
     "start-gendoc": "node swagger.js",
-    "heroku-postbuild" : "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
