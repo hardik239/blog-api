@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { RegisterSchema } from "../utils/Validations";
 import TextError from "../components/TextError";
 import { SendEmail } from "../utils/SendEmail";
 import { VerifyOtpTemplate } from "../utils/Templates";
@@ -12,7 +12,7 @@ import {
   SweetSuccess,
   SweetWait,
   SweetWrong
-} from "../utils/index";
+} from "../utils/SweetAlert";
 import axios from "axios";
 import swal from "sweetalert";
 
@@ -29,19 +29,6 @@ const initialValue = {
   password: ""
 };
 
-const validationSchema = Yup.object({
-  name: Yup.string().required("This Field Is Required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("This Field Is Required"),
-  password: Yup.string()
-    .required("This Field Is Required")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
-    )
-});
-
 const Register = () => {
   const [otpStatusText, setOtpStatusText] = useState("Send Otp");
 
@@ -51,7 +38,6 @@ const Register = () => {
 
   const onRegister = async (values, submitProps) => {
     SweetWait();
-
     const res = await axios.post("http://localhost:5000/user/userexist", {
       email: values.email
     });
@@ -117,7 +103,7 @@ const Register = () => {
           <div className="login-form">
             <Formik
               initialValues={initialValue}
-              validationSchema={validationSchema}
+              validationSchema={RegisterSchema}
               onSubmit={onRegister}>
               <Form autoComplete="new-password">
                 <div className="form-group">

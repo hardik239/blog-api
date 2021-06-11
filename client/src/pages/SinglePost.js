@@ -56,7 +56,6 @@ const SinglePost = () => {
             perspiciatis, natus quaerat voluptatem laboriosam.
           </p>
         </div>
-        {/* <div className="col"></div> */}
       </div>
       <div className="row mb-5 mx-1">
         <div className="col-12 col-md-10 mx-auto card bg-light">

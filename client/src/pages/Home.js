@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 const Home = () => {
   return (
     <>
-      <div className="banner-image w-100 shadow vh-100 d-flex justify-content-center align-items-center">
+      <div className="banner-image w-100 shadow vh-100  d-flex justify-content-center align-items-center">
         <div className="content mt-5">
           <h5 className="text-white text-center fs-3">
             Welcome To Ultimate Blog

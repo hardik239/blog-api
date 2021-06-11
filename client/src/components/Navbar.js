@@ -1,16 +1,29 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { isAuthenticate } from "../store/AsyncActions/AuthActions";
+import swal from "sweetalert";
 
 const Navbar = () => {
   const { username } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   const logout = () => {
-    console.log("log");
-    dispatch({ type: "LOGOUT" });
+    swal({
+      title: "Are you sure?",
+      text: "You Want To Logout From Ultimate Blog!!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then((willDelete) => {
+      if (willDelete) {
+        swal("Logout Successfully.", { icon: "success" });
+        dispatch({ type: "LOGOUT" });
+        history.push("/");
+      }
+    });
   };
 
   useEffect(() => {}, [username]);
@@ -49,13 +62,54 @@ const Navbar = () => {
                       Articles
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle text-white me-md-4"
+                      to="/"
+                      id="navbarDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                      {username}
+                    </Link>
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="navbarDropdown">
+                      <li>
+                        <Link className="dropdown-item" to="/my-profile">
+                          My Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/create-post">
+                          Create Post
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/saved-post">
+                          Saved Post
+                        </Link>
+                      </li>
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                      <li>
+                        <span
+                          onClick={logout}
+                          className="dropdown-item logout"
+                          to="/">
+                          Logout
+                        </span>
+                      </li>
+                    </ul>
+                  </li>
+                  {/* <li className="nav-item">
                     <span
                       className="nav-link logout text-white me-md-4"
                       onClick={logout}>
                       Logout
                     </span>
-                  </li>
+                  </li> */}
                 </>
               ) : (
                 <>

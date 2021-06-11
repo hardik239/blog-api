@@ -1,37 +1,37 @@
 import { Route, Switch, useLocation } from "react-router-dom";
 
-import React, { useEffect } from "react";
+import React from "react";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import SinglePost from "./pages/SinglePost";
-import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Contact from "./pages/Contact";
-import { useSelector, useDispatch } from "react-redux";
-import { isAuthenticate } from "./store/AsyncActions/AuthActions";
+import MyProfile from "./pages/MyProfile";
+import CreatePost from "./pages/CreatePost";
+import SavePost from "./pages/SavePost";
+
+import ProtectedRoute from "./authRoutes/ProtectedRoute";
+import IsAuthenticated from "./authRoutes/IsAuthenticate";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   const location = useLocation();
-
-  // const { token } = useSelector((state) => state.token);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(isAuthenticate(token));
-  // }, [token]);
 
   return (
     <>
       <Navbar />
       <Switch location={location} key={location.pathname}>
-        <Route path="/single-post" component={SinglePost} />
-        <Route path="/sign-in" component={Login} />
-        <Route path="/sign-up" component={Register} />
+        <Route exact path="/" component={Home} />
+        <ProtectedRoute path="/single-post" component={SinglePost} />
+        <ProtectedRoute path="/my-profile" component={MyProfile} />
+        <ProtectedRoute path="/create-post" component={CreatePost} />
+        <ProtectedRoute path="/saved-post" component={SavePost} />
+        <IsAuthenticated path="/sign-in" component={Login} />
+        <IsAuthenticated path="/sign-up" component={Register} />
         <Route path="/contact" component={Contact} />
-        <Route path="/" component={Home} />
+        <Route path="/*" component={PageNotFound} />
       </Switch>
     </>
   );

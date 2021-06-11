@@ -3,36 +3,21 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { postLogin } from "../store/AsyncActions/AuthActions";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { LoginSchema } from "../utils/Validations";
 import TextError from "../components/TextError";
-import swal from "sweetalert";
+import { SweetWait } from "../utils/SweetAlert";
 
 const initialValue = {
   username: "",
   password: ""
 };
 
-const validationSchemaLogin = Yup.object({
-  username: Yup.string()
-    .email("Invalid email format")
-    .required("This Field Is Required"),
-  password: Yup.string()
-    .required("This Field Is Required")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      "password must contain 8 characters, one uppercase, one lowercase, one number and one special case character"
-    )
-});
-
 const Login = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
   const onLogin = (values, submitProps) => {
-    swal({
-      title: "Please Wait",
-      buttons: false
-    });
+    SweetWait();
     dispatch(postLogin(values, history));
     submitProps.setSubmitting(false);
     submitProps.resetForm();
@@ -49,7 +34,7 @@ const Login = () => {
           <div className="login-form">
             <Formik
               initialValues={initialValue}
-              validationSchema={validationSchemaLogin}
+              validationSchema={LoginSchema}
               onSubmit={onLogin}>
               <Form autoComplete="new-password">
                 <div className="form-group">

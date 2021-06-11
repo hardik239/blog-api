@@ -1,23 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { Context } from "../Context/context";
+import { useSelector } from "react-redux";
 
-const IsAuthenticated = ({ component: Component, ...props }) => {
-  const [state, _] = useContext(Context);
-  const isAuthenticated = state?.user?.username ? true : false;
+const IsAuthenticated = ({ component: Component, ...rest }) => {
+  const { username } = useSelector((state) => state.user);
+
+  // const isAuthenticate =  ? true : false;
 
   return (
     <Route
-      {...props}
       render={(props) =>
-        !isAuthenticated ? (
-          <Component {...props} />
-        ) : (
+        username ? (
           <Redirect
             to={{
               pathname: "/"
             }}
           />
+        ) : (
+          <Component {...props} />
         )
       }
     />

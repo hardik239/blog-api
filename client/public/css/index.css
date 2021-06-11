@@ -28,10 +28,6 @@ body {
   }
 }
 
-.logout {
-  cursor: pointer;
-}
-
 .banner-image {
   width: 100%;
   height: 500px !important;
@@ -45,6 +41,20 @@ li a:hover,
 .logout:hover {
   border-bottom: 2px solid var(--primart-color);
   padding-bottom: 3px;
+}
+
+.dropdown a {
+  border-bottom: 0px !important;
+}
+
+.dropdown-toggle::after {
+  margin-left: 0.355em !important;
+  vertical-align: 0.155em !important;
+}
+
+.logout {
+  cursor: pointer;
+  border: none !important;
 }
 
 .headings {
