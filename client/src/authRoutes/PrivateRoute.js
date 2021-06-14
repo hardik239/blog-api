@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ component: Component, ...props }) => {
   // const isAuthenticated = props.location.state?.isClick ? true : false
-  const { username } = useSelector((state) => (state.user ? state.user : null));
+  const isPreviewClick = useSelector((state) => state.isPreviewClick);
   return (
     <Route
       render={(props) =>
-        username ? (
+        isPreviewClick ? (
           <Component {...props} />
         ) : (
           <Redirect

@@ -18,9 +18,7 @@ const Login = () => {
 
   const onLogin = (values, submitProps) => {
     SweetWait();
-    dispatch(postLogin(values, history));
-    submitProps.setSubmitting(false);
-    submitProps.resetForm();
+    dispatch(postLogin(values, history, submitProps));
   };
 
   return (

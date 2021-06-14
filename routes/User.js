@@ -4,6 +4,13 @@ const passport = require("passport");
 const passportConfig = require("../passport");
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
+const Post = require("../models/Post");
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
+
+const formidable = require("formidable");
+const uniqueSlug = require("unique-slug");
 
 const signToken = (userID) => {
   return JWT.sign(
@@ -95,6 +102,135 @@ userRouter.post("/userexist", async (req, res) => {
   } catch (error) {
     return res.status(200).json({ error: "Something Went Wrong..." });
   }
+});
+
+//=================================
+//             Blog
+//=================================
+
+// fieldname: 'file',
+// originalname: 'React.png',
+// encoding: '7bit',
+// mimetype: 'image/png',
+// destination: 'uploads/',
+// filename: '1573656172282_React.png',
+// path: 'uploads/1573656172282_React.png',
+// size: 24031
+
+userRouter.post("/uploadfiles", (req, res) => {
+  const form = formidable({ multiples: true });
+
+  form.parse(req, (error, fields, files) => {
+    if (Object.keys(files).length === 0) {
+      return res.json({ success: false, msg: "Image is required" });
+    } else {
+      const { type } = files.file;
+      const split = type.split("/");
+      const extension = split[1].toLowerCase();
+      if (extension !== "jpg" && extension !== "jpeg" && extension !== "png") {
+        return res.json({
+          success: false,
+          msg: `${extension} is not a valid extension`
+        });
+      } else {
+        files.file.name = uuidv4() + "." + extension;
+        const newPath =
+          __dirname + `/../client/public/images/${files.file.name}`;
+        fs.copyFile(files.file.path, newPath, async (error) => {
+          if (!error) {
+            return res.status(200).json({
+              success: true,
+              url: files.file.name
+            });
+          } else {
+            return res.json({ success: false, err });
+          }
+        });
+      }
+    }
+  });
+});
+
+userRouter.post("/create-post", async (req, res) => {
+  const form = formidable({ multiples: true });
+
+  form.parse(req, async (error, fields, files) => {
+    let { title, body, token, categories } = fields;
+
+    try {
+      const response = jwt.verify(token, process.env.JWT_SECRET);
+
+      const user = User.findById(response.sub);
+      if (user) {
+        categories = JSON.parse(categories);
+
+        if (Object.keys(files).length === 0) {
+          return res
+            .status(400)
+            .json({ msg: "Cover Image is required", status: "success" });
+        } else {
+          const { type } = files.image;
+          const split = type.split("/");
+          const extension = split[1].toLowerCase();
+          if (
+            extension !== "jpg" &&
+            extension !== "jpeg" &&
+            extension !== "png"
+          ) {
+            res.status(400).json({
+              msg: `${extension} is not a valid extension`,
+              status: "warning"
+            });
+          } else {
+            files.image.name = uuidv4() + "." + extension;
+
+            const newPath =
+              __dirname + `/../client/public/images/${files.image.name}`;
+
+            fs.copyFile(files.image.path, newPath, async (error) => {
+              if (!error) {
+                try {
+                  let slug =
+                    title.toLowerCase().split(" ").join("-") +
+                    "-" +
+                    uniqueSlug(user._id);
+
+                  const response = await Post.create({
+                    title,
+                    body,
+                    image: files.image.name,
+                    author: user._id,
+                    categories,
+                    slug
+                  });
+                  return res.status(200).json({
+                    msg: "Your post Published successfully",
+                    status: "success",
+                    response
+                  });
+                } catch (error) {
+                  return res
+                    .status(400)
+                    .json({ status: "error", msg: error.message });
+                }
+              } else {
+                res
+                  .status(400)
+                  .json({ msg: "Something Went Wrong", status: "error" });
+              }
+            });
+          }
+        }
+      } else {
+        res.status(400).json({ msg: "Something Went Wrong", status: "error" });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        msg: "Something Went Wrong..Please Login Again",
+        status: "warning"
+      });
+    }
+  });
 });
 
 module.exports = userRouter;

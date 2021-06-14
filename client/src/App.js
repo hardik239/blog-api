@@ -13,8 +13,10 @@ import CreatePost from "./pages/CreatePost";
 import SavePost from "./pages/SavePost";
 
 import ProtectedRoute from "./authRoutes/ProtectedRoute";
+import PrivateRoute from "./authRoutes/PrivateRoute";
 import IsAuthenticated from "./authRoutes/IsAuthenticate";
 import PageNotFound from "./pages/PageNotFound";
+import Test from "./pages/Test";
 
 function App() {
   const location = useLocation();
@@ -31,6 +33,7 @@ function App() {
         <IsAuthenticated path="/sign-in" component={Login} />
         <IsAuthenticated path="/sign-up" component={Register} />
         <Route path="/contact" component={Contact} />
+        <PrivateRoute path="/preview" component={Test} />
         <Route path="/*" component={PageNotFound} />
       </Switch>
     </>

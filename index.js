@@ -7,6 +7,10 @@ const cors = require("cors");
 const userRouter = require("./routes/User");
 const PORT = process.env.PORT || 5000;
 
+const uniqueSlug = require("unique-slug");
+
+// console.log(uniqueSlug("/How To Create Website Using Html Css/ "));
+
 app.use(
   cors({
     origin: "http://localhost:3000",

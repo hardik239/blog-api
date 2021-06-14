@@ -39,7 +39,7 @@ const config = {
 //   };
 // };
 
-export const postLogin = (UserData, history) => {
+export const postLogin = (UserData, history, submitProps) => {
   return async (dispatch) => {
     dispatch({ type: "TOGGLE_LOADER" });
 
@@ -61,22 +61,17 @@ export const postLogin = (UserData, history) => {
           user: res.data.user,
           token: res.data.token
         });
+        submitProps.setSubmitting(false);
+        submitProps.resetForm();
         history.push("/single-post");
-      } else if (res.status === 401) {
-        swal({
-          title: "Oppss!!",
-          text: "Wrong Credentials",
-          icon: "info"
-        });
       }
     } catch (error) {
       dispatch({ type: "TOGGLE_LOADER" });
       swal({
-        title: "Oppss!!",
-        text: "Something Went Wrong",
-        icon: "error"
+        title: "!! Oppss !!",
+        text: error.message,
+        icon: "info"
       });
-      console.log(error);
     }
   };
 };

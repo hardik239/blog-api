@@ -10,14 +10,16 @@ const cookieExtractor = (req) => {
   //   token = req.cookies["access_token"];
   // }
   // return token;
-  return req.body.token;
+  const { token } = req.body;
+  console.log(token + " kk");
+  return token;
 };
 
 // authorization
 passport.use(
   new JwtStrategy(
     {
-      jwtFromRequest: cookieExtractor,
+      jwtFromRequest: (req) => req.body.token,
       secretOrKey: `${process.env.JWT_SECRET}`
     },
     (payload, done) => {

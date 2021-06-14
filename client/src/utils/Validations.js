@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import swal from "sweetalert";
 
 export const LoginSchema = Yup.object({
   username: Yup.string()
@@ -24,3 +25,27 @@ export const RegisterSchema = Yup.object({
       "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
     )
 });
+
+export const NotEmpty = (input) => {
+  if (input.trim().length > 0) return true;
+  else {
+    swal({
+      title: "!! Warnign !!",
+      text: `Title Cannot Be Empty`,
+      icon: "info"
+    });
+    return false;
+  }
+};
+
+export const MinLength = (text) => {
+  if (text.length >= 150) return true;
+  else {
+    swal({
+      title: "!! Warnign !!",
+      text: `Atleast 150 Characters Required To Post Articles`,
+      icon: "info"
+    });
+    return false;
+  }
+};
