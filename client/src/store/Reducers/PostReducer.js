@@ -1,38 +1,29 @@
 import { secureStorage } from "../../utils/SecureStorage";
 
 const initialState = {
-  user: secureStorage.getItem("user") || {},
   loader: false,
-  posts: secureStorage.getItem("posts") || [],
-  comments: secureStorage.getItem("comments") || [],
-  token: secureStorage.getItem("token") || null,
-  testPost: null,
-  publishPost: null,
-  isPreviewClick: false
+  posts: [],
+  comments: [],
+  draftPost: secureStorage.getItem("draftPost") || null,
+  isPreviewClick: secureStorage.getItem("isPreviewClick") || false
 };
 
-export default function AuthReducer(state = initialState, action) {
+export default function PostReducer(state = initialState, action) {
   switch (action.type) {
-    case "TOGGLE_LOADER":
-      const isLoading = state.loader;
-      return { ...state, loader: !isLoading };
+    case "SET_LOADING":
+      return { ...state, loader: true };
 
-    case "SET_USER":
-      secureStorage.setItem("token", action.token);
-      secureStorage.setItem("user", action.user);
-      return {
-        ...state,
-        user: action.user,
-        token: action.token,
-        loader: false
-      };
+    case "CLOSE_LOADING":
+      return { ...state, loader: false };
 
     case "SET_POSTS":
-      secureStorage.setItem("posts", action.posts);
       return { ...state, posts: action.posts };
 
-    case "SET_TEST_POST":
-      return { ...state, testPost: action.testPost, isPreviewClick: true };
+    case "SET_DRAFT_POST":
+      secureStorage.setItem("draftPost", action.draftPost);
+      secureStorage.setItem("isPreviewClick", true);
+      console.log(action);
+      return { ...state, draftPost: action.draftPost, isPreviewClick: true };
 
     case "SET_PUBLISH_POST":
       let temp = state.posts;
@@ -41,7 +32,7 @@ export default function AuthReducer(state = initialState, action) {
         ...state,
         posts: temp,
         publishPost: action.post,
-        isPreviewClick: true
+        isPreviewClick: false
       };
 
     case "SET_PREVIEW":
@@ -50,11 +41,6 @@ export default function AuthReducer(state = initialState, action) {
     case "SET_COMMETS":
       secureStorage.setItem("comments", action.comments);
       return { ...state, comments: action.comments };
-
-    case "LOGOUT":
-      secureStorage.removeItem("user");
-      secureStorage.removeItem("token");
-      return { ...state, user: {}, token: null };
 
     default:
       return state;

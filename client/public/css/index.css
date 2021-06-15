@@ -79,6 +79,44 @@ li a:hover,
   height: 400px !important;
 }
 
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bookmark-icons {
+  cursor: pointer;
+  transition: all 0.4s ease-in;
+}
+
+.preview-tag {
+  position: absolute;
+  background-color: #09090957;
+  color: white;
+  width: 200px;
+  text-align: center;
+  right: -25px;
+  height: 30px;
+  font-size: larger;
+  top: 21px;
+  transform: rotate(29deg);
+}
+
+/* .user-section {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between !important;
+} */
+
+.card-title:hover,
+.card-img-top:hover {
+  cursor: pointer;
+  color: blue;
+}
+
 .card-image:hover,
 .post-title:hover {
   cursor: pointer;
@@ -176,11 +214,6 @@ label {
   margin-bottom: 0px;
 }
 
-video {
-  height: 200px !important;
-  width: 400px !important;
-}
-
 .form-control-label {
   font-size: 10px;
   color: #6c6c6c;
@@ -245,8 +278,17 @@ video {
   color: #fff !important;
 }
 
+.ql-editor img {
+  height: 300px;
+  width: 100% !important;
+}
+
 .create-post .ql-editor img {
   width: 100% !important;
   object-fit: contain !important;
   height: 200px !important;
+}
+
+.hide {
+  display: none !important;
 }

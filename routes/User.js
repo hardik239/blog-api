@@ -19,7 +19,7 @@ const signToken = (userID) => {
       sub: userID
     },
     `${process.env.JWT_SECRET}`,
-    { expiresIn: "1h" }
+    { expiresIn: "24h" }
   );
 };
 
@@ -160,14 +160,15 @@ userRouter.post("/create-post", async (req, res) => {
     try {
       const response = jwt.verify(token, process.env.JWT_SECRET);
 
-      const user = User.findById(response.sub);
+      const user = await User.findOne({ _id: response.sub });
+
       if (user) {
         categories = JSON.parse(categories);
 
         if (Object.keys(files).length === 0) {
           return res
             .status(400)
-            .json({ msg: "Cover Image is required", status: "success" });
+            .json({ msg: "Cover Image is required", status: "warning" });
         } else {
           const { type } = files.image;
           const split = type.split("/");
@@ -193,13 +194,15 @@ userRouter.post("/create-post", async (req, res) => {
                   let slug =
                     title.toLowerCase().split(" ").join("-") +
                     "-" +
-                    uniqueSlug(user._id);
+                    uniqueSlug(`${user._id}${Date.now().toString()}`);
+
+                  console.log(user._id, slug);
 
                   const response = await Post.create({
                     title,
                     body,
                     image: files.image.name,
-                    author: user._id,
+                    userId: user._id,
                     categories,
                     slug
                   });
@@ -226,7 +229,7 @@ userRouter.post("/create-post", async (req, res) => {
       }
     } catch (error) {
       return res.status(400).json({
-        msg: "Something Went Wrong..Please Login Again",
+        msg: error.message,
         status: "warning"
       });
     }

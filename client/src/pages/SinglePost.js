@@ -1,36 +1,77 @@
-import React from "react";
+import axios from "axios";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+
+function extractContent(html) {
+  return new DOMParser().parseFromString(html, "text/html").documentElement
+    .textContent;
+}
+
+function trimDescription(string) {
+  const length = 80;
+  let trimmedString =
+    string.length > length ? string.substring(0, length - 3) + "..." : string;
+
+  return trimmedString;
+}
 
 const SinglePost = () => {
+  const { id } = useParams();
+
+  const [post, setPost] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/post/single/${id}`);
+
+      if (res.status === 200 && res.data.post) {
+        setPost(res.data.post);
+        setIsLoading(false);
+        console.log(res.data.post);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id]);
+
+  if (isLoading) return <div>Loading....</div>;
   return (
     <div
       className="container-fluid cover-image"
-      style={{ background: 'url("./images/blog-bg.jpg")' }}>
+      style={{ background: `url(/images/${post.image})` }}>
       <div className="container">
         <div className="row mb-5">
           <div className="col-12 col-md-10 cover-margin p-4 card mx-auto">
             <div>
-              <h1 className="p-0">
-                Build a website in minutes with Adobe Templates
-              </h1>
+              <h1 className="p-0">{post?.title}</h1>
               <span className="time-text">
-                Posted on January 1, 2021 by Hardik Thakor
+                Posted on {moment(post?.createdAt).format("MMMM DD, YYYY ")}
+                by {post?.userId?.username}
               </span>
             </div>
             <div className="d-flex my-3">
-              <span className="badge bg-light text-dark me-2 text-uppercase">
-                Technology
-              </span>
-              <span className="badge bg-light text-dark me-2 text-uppercase">
-                Javascript
-              </span>
+              {post?.categories?.map((category) => {
+                return (
+                  <span
+                    key={category}
+                    className="badge bg-light text-dark me-2 text-uppercase">
+                    {category}
+                  </span>
+                );
+              })}
             </div>
-            <p className="description lh-base fs-5 mb-4">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. A rem
-              iure commodi neque exercitationem itaque facilis natus molestias
-              labore, doloribus expedita excepturi recusandae dolor aperiam aut
-              mollitia doloremque. Beatae officia ullam perspiciatis, natus
-              quaerat voluptatem laboriosam expedita excepturi recusandae dolor
-            </p>
+            <div className="descridivtion lh-base fs-5 mb-4">
+              <ReactQuill
+                className="bg-white editor"
+                value={JSON.parse(post?.body)}
+                theme="bubble"
+                readOnly={true}
+              />
+            </div>
           </div>
         </div>
         <div className="row mb-5 pb-5">

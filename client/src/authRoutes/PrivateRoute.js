@@ -3,8 +3,7 @@ import { Redirect, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ component: Component, ...props }) => {
-  // const isAuthenticated = props.location.state?.isClick ? true : false
-  const isPreviewClick = useSelector((state) => state.isPreviewClick);
+  const { isPreviewClick } = useSelector((state) => state.PostReducer);
   return (
     <Route
       render={(props) =>

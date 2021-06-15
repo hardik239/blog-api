@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import swal from "sweetalert";
+import Store from "../store";
 
 const Navbar = () => {
-  const { username } = useSelector((state) => state.user);
+  const { username } = useSelector((state) => state.AuthReducer.user);
 
   const dispatch = useDispatch();
 
@@ -28,7 +29,7 @@ const Navbar = () => {
 
   useEffect(() => {}, [username]);
   return (
-    <div className="mb-4">
+    <div className="mb-4" id="navbar-section">
       <nav className="navbar fixed-top bg-dark navbar-expand-lg navbar-dark p-md-3">
         <div className="container">
           <Link className="navbar-brand" to="/">
@@ -103,13 +104,6 @@ const Navbar = () => {
                       </li>
                     </ul>
                   </li>
-                  {/* <li className="nav-item">
-                    <span
-                      className="nav-link logout text-white me-md-4"
-                      onClick={logout}>
-                      Logout
-                    </span>
-                  </li> */}
                 </>
               ) : (
                 <>

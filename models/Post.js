@@ -14,13 +14,13 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    author: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
     comments: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comments"
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "comment"
     },
     categories: {
       type: [],

@@ -22,57 +22,49 @@ const Categories = [
 ];
 
 const CreatePost = () => {
-  const [content, setContent] = useState({
-    text: ""
-  });
+  const [content, setContent] = useState("");
 
-  const token = useSelector((state) => state.token);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const { token } = useSelector((state) => state.AuthReducer);
 
   const [currentImage, setCurrentImage] = useState("Choose image");
+  const [previewImage, setPreviewImage] = useState("");
 
   const [post, setPost] = useState({
     title: "",
     image: ""
   });
 
-  const fileHandle = (e) => {
+  const handleFileChange = (e) => {
     if (e.target.files.length !== 0) {
       setCurrentImage(e.target.files[0].name);
       setPost({
         ...post,
         image: e.target.files[0]
       });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(e.target.files[0]);
     }
   };
 
-  const [files, setFiles] = useState("");
-
-  const onFilesChange = (e) => {
-    setFiles(e.target.files[0]);
-  };
-
-  const dispatch = useDispatch();
-  const history = useHistory();
-
-  // const preview = () => {
-
-  // }
-
   const handleChange = (value) => {
-    setContent({ text: value });
+    setContent(value);
   };
 
   function getCheckedBoxes(chkboxName) {
-    var checkboxes = document.getElementsByName(chkboxName);
-    var checkboxesChecked = [];
-    // loop over them all
-    for (var i = 0; i < checkboxes.length; i++) {
-      // And stick the checked ones onto an array...
+    const checkboxes = document.getElementsByName(chkboxName);
+    let checkboxesChecked = [];
+
+    for (let i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i].checked) {
         checkboxesChecked.push(checkboxes[i].value);
       }
     }
-    // Return the array if it is non-empty, or null
     return checkboxesChecked;
   }
 
@@ -81,9 +73,9 @@ const CreatePost = () => {
 
     const selectedCategories = getCheckedBoxes("categorycheckbox");
 
-    // make req...
     const { title, image } = post;
-    if (NotEmpty(title) && MinLength(content.text)) {
+
+    if (NotEmpty(title) && MinLength(content)) {
       if (!image) {
         swal({
           title: "!! Warnign !!",
@@ -99,7 +91,7 @@ const CreatePost = () => {
       } else {
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("body", JSON.stringify(content.text));
+        formData.append("body", JSON.stringify(content));
         formData.append("image", image);
         formData.append("token", token);
 
@@ -116,11 +108,11 @@ const CreatePost = () => {
               text: response.data.msg,
               icon: "success"
             });
-            dispatch({
-              type: "SET_PUBLISH_POST",
-              post: response.data.response
-            });
-            history.push("/preview");
+            // dispatch({
+            //   type: "SET_PUBLISH_POST",
+            //   post: response.data.response
+            // });
+            history.push("/");
           } else if (response.data.status === "warning") {
             swal({
               title: "!! Warnign !!",
@@ -146,15 +138,18 @@ const CreatePost = () => {
     }
   };
 
-  const testPostFun = () => {
-    let post = {
-      title: "rkbhgjkr",
-      image: "bdcjdsbjkcds",
-      body: JSON.stringify(content.text),
-      categories: []
+  const handleDraftPost = () => {
+    let draftPost = {
+      title: post.title,
+      image: previewImage,
+      body: content,
+      file: post.image,
+      categories: getCheckedBoxes("categorycheckbox")
     };
-    dispatch({ type: "SET_PUBLISH_POST", post });
-    history.push("/preview");
+
+    dispatch({ type: "SET_DRAFT_POST", draftPost });
+    // history.push("/preview");
+    window.open("/preview");
   };
 
   const imageHandler = async () => {
@@ -192,7 +187,7 @@ const CreatePost = () => {
             quill.insertEmbed(
               range.index,
               "image",
-              "./images/" + response.data.url
+              "/images/" + response.data.url
             );
             quill.setSelection(range.index + 1);
           } else {
@@ -214,6 +209,7 @@ const CreatePost = () => {
             { indent: "-1" },
             { indent: "+1" }
           ],
+          [{ align: ["right", "center", "justify"] }],
           ["link", "image", "video"],
           ["clean"]
         ],
@@ -237,7 +233,8 @@ const CreatePost = () => {
     "indent",
     "link",
     "image",
-    "code-block"
+    "code-block",
+    "align"
   ];
 
   const handleCreatePost = (e) => {
@@ -270,7 +267,7 @@ const CreatePost = () => {
                   quillObj = el;
                 }}
                 className="bg-white editor"
-                value={content.text}
+                value={content}
                 modules={modules}
                 formats={formats}
                 onChange={handleChange}
@@ -299,7 +296,7 @@ const CreatePost = () => {
                       <button
                         type="button"
                         className="action-button"
-                        onClick={testPostFun}>
+                        onClick={handleDraftPost}>
                         Launch Preview
                       </button>
                       <button className="action-button" onClick={handlePublish}>
@@ -332,10 +329,9 @@ const CreatePost = () => {
                         className="text-center w-100 fs-6 action-button">
                         <input
                           type="file"
-                          onChange={onFilesChange}
                           name="image"
                           id="selectCover"
-                          onChange={fileHandle}
+                          onChange={handleFileChange}
                           style={{ display: "none" }}
                         />
                         {currentImage}
@@ -371,7 +367,6 @@ const CreatePost = () => {
                                   type="checkbox"
                                   name="categorycheckbox"
                                   value={category.text}
-                                  // onChange={() => handleCategory(category.id)}
                                   id={category.id}
                                 />
                                 <label
