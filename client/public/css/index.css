@@ -19,6 +19,10 @@ body {
   background: #f3f0f0;
 }
 
+.text-main {
+  color: var(--primart-color) !important;
+}
+
 .navbar-dark .navbar-toggler {
   border-color: #212529 !important;
 }
@@ -55,8 +59,24 @@ li a:hover,
   padding-bottom: 3px;
 }
 
-.dropdown a {
-  border-bottom: 0px !important;
+.dropdown-menu {
+  border: none !important;
+  background: #212529 !important;
+  color: white !important;
+}
+
+.dropdown-toggle:hover,
+.dropdown-item:hover {
+  border: none !important;
+}
+
+.dropdown-item {
+  color: white !important;
+}
+
+.dropdown-item:hover {
+  color: orange !important;
+  background-color: #212529 !important;
 }
 
 .dropdown-toggle::after {

@@ -82,6 +82,11 @@ const Navbar = () => {
                         </Link>
                       </li>
                       <li>
+                        <Link className="dropdown-item" to="/my-posts">
+                          My Posts
+                        </Link>
+                      </li>
+                      <li>
                         <Link className="dropdown-item" to="/create-post">
                           Create Post
                         </Link>

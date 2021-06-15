@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
+    },
+    mySavedPosts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Post"
     }
   },
   { timestamps: true }

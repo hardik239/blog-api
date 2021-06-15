@@ -6,6 +6,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { LoginSchema } from "../utils/Validations";
 import TextError from "../components/TextError";
 import { SweetWait } from "../utils/SweetAlert";
+import { FaUser } from "react-icons/fa";
 
 const initialValue = {
   username: "",
@@ -22,11 +23,11 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container mb-5">
       <div className="row mx-1 mt-md-4">
         <div className="col-md-5 login-box mx-auto">
           <div className="mt-3">
-            <img src="./images/avatar.png" alt="avatar" className="avatar" />
+            <FaUser size={100} color="orange" />
           </div>
           <div className="login-title">Sign In</div>
           <div className="login-form">

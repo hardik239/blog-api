@@ -63,15 +63,23 @@ export const postLogin = (UserData, history, submitProps) => {
         });
         submitProps.setSubmitting(false);
         submitProps.resetForm();
-        history.push("/single-post");
+        history.push("/my-posts");
       }
     } catch (error) {
       dispatch({ type: "TOGGLE_LOADER" });
-      swal({
-        title: "!! Oppss !!",
-        text: error.message,
-        icon: "info"
-      });
+      if (error.message === "Request failed with status code 401") {
+        swal({
+          title: "!! Oppss !!",
+          text: "Invalid Credintials",
+          icon: "info"
+        });
+      } else {
+        swal({
+          title: "!! Oppss !!",
+          text: error.message,
+          icon: "info"
+        });
+      }
     }
   };
 };

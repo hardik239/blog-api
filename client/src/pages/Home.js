@@ -10,7 +10,7 @@ const Home = () => {
           <h5 className="text-white text-center fs-3">
             Welcome To Ultimate Blog
           </h5>
-          <h1 className="fs-1" style={{ color: "orange" }}>
+          <h1 className="fs-2 fs-md-1 text-center" style={{ color: "orange" }}>
             Where good ideas find you.
           </h1>
         </div>

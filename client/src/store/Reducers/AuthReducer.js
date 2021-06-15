@@ -3,7 +3,8 @@ import { secureStorage } from "../../utils/SecureStorage";
 const initialState = {
   user: secureStorage.getItem("user") || {},
   loader: false,
-  token: secureStorage.getItem("token") || null
+  token: secureStorage.getItem("token") || null,
+  updateState: false
 };
 
 export default function AuthReducer(state = initialState, action) {
@@ -13,6 +14,9 @@ export default function AuthReducer(state = initialState, action) {
 
     case "CLOSE_LOADING":
       return { ...state, loader: false };
+
+    case "TOGGLE_STATE":
+      return { ...state, updateState: !state.updateState };
 
     case "SET_USER":
       secureStorage.setItem("token", action.token);

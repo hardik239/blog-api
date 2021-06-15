@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaEdit, FaTrashAlt } from "react-icons/fa";
 import moment from "moment";
-import { parse } from "node-html-parser";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  DeletePost,
+  SaveAndUnsavePost
+} from "../store/AsyncActions/PostActions";
 
 function extractContent(html) {
   return trimDescription(
@@ -12,8 +16,6 @@ function extractContent(html) {
 }
 
 const avatarGenerateUrl = "https://ui-avatars.com/api/?background=random&name=";
-
-// https://ui-avatars.com/api/?name=hardik&background=random
 
 function trimDescription(string) {
   const length = 80;
@@ -26,14 +28,26 @@ function trimDescription(string) {
 const Card = ({ post }) => {
   const history = useHistory();
 
+  const { user } = useSelector((state) => state.AuthReducer);
+
+  const dispatch = useDispatch();
+
   const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
 
-  const redirectToDetailPost = (id) => {
-    history.push(`/single-post/${id}`);
+  const redirectToDetailPost = () => {
+    history.push({
+      pathname: "/single-post",
+      state: post
+    });
+  };
+
+  const handleSaveAndUnsave = (name) => {
+    setIsSaveClick(name);
+    dispatch(SaveAndUnsavePost(post._id));
   };
 
   return (
-    <div className="col-md-4 d-flex mb-5 align-items-stretch">
+    <div className="col-md-4 mx-auto d-flex mb-5 justify-content-center align-items-stretch">
       <div
         className="card shadow"
         style={{
@@ -43,7 +57,7 @@ const Card = ({ post }) => {
         <img
           src={`/images/${post.image}`}
           className="card-img-top mb-3 "
-          onClick={() => redirectToDetailPost(post._id)}
+          onClick={redirectToDetailPost}
           style={{
             borderRadius: "15px",
             height: "200px",
@@ -80,69 +94,25 @@ const Card = ({ post }) => {
               </div>
             </div>
           </div>
-          <div className="bookmark-icons">
-            {isSaveClick === "FaBookmark" ? (
-              <FaBookmark
-                onClick={() => setIsSaveClick("FaRegBookmark")}
-                size={20}
-              />
-            ) : (
-              <FaRegBookmark
-                onClick={() => setIsSaveClick("FaBookmark")}
-                size={20}
-              />
-            )}
+          <div className="bookmark-icons mt-2">
+            <div className="d-flex align-items-center">
+              {isSaveClick === "FaBookmark" ? (
+                <FaBookmark
+                  onClick={() => handleSaveAndUnsave("FaRegBookmark")}
+                  size={20}
+                />
+              ) : (
+                <FaRegBookmark
+                  onClick={() => handleSaveAndUnsave("FaBookmark")}
+                  size={20}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-//   return (
-//     <>
-//       <div
-//         className="row mb-5 p-3 mx-2 mx-md-0 gap-4 gap-md-0  shadow"
-//         style={{ borderRadius: "5px" }}>
-//         <div
-//           className="col-md-7 card-image"
-//           onClick={() => history.push("/single-post")}
-//           style={{
-//             background: `url(./images/${post.image})`
-//           }}></div>
-//         <div className="col-md-5 ps-5 d-flex justify-content-between flex-column">
-//           <div>
-//             <h1
-//               className="post-title"
-//               onClick={() => history.push("/single-post")}>
-//               {post.title}
-//             </h1>
-//             <span className="time-text ">
-//               {moment(post.createdAt).fromNow()}
-//             </span>
-//           </div>
-//           <div className="d-flex">
-//             {post?.categories?.map((category) => {
-//               return (
-//                 <span
-//                   key={category}
-//                   className="badge bg-white text-dark me-2 text-uppercase">
-//                   {category}
-//                 </span>
-//               );
-//             })}
-//           </div>
-//           <div className="description mb-1">
-//             {extractContent(JSON.parse(post.body))}
-//           </div>
-//           <div className="">
-//             {/* <FaBookmark size={20} /> */}
-//             <FaRegBookmark size={20} />
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
 
 export default Card;

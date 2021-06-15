@@ -1,34 +1,38 @@
 const express = require("express");
 const User = require("../models/User");
-const Post = require("../models/Post");
-
+const jwt = require("jsonwebtoken");
 const postRouter = express.Router();
 
-postRouter.get("/fetch-all", (req, res) => {
-  Post.find({})
-    .limit(5)
-    .populate("userId")
-    .exec((err, posts) => {
-      if (err) {
-        return res
-          .status(400)
-          .json({ msg: "Something Went Wrong", status: "warning" });
-      }
-      return res.status(200).json({ status: "success", posts });
-    });
-});
+const PostController = require("../controllers/PostController");
 
-postRouter.get("/single/:id", (req, res) => {
-  Post.findOne({ _id: id })
-    .populate("userId")
-    .exec((err, post) => {
-      if (err) {
-        return res
-          .status(400)
-          .json({ msg: "Something Went Wrong", status: "warning" });
-      }
-      return res.status(200).json({ status: "success", post });
-    });
+postRouter.post("/uploadfiles", PostController().uploadFile);
+
+postRouter.post("/create-post", PostController().createPost);
+
+postRouter.get("/fetch-all", PostController().fetchAllPost);
+
+postRouter.post("/fetch-user-posts", PostController().fetchUserPosts);
+
+postRouter.post("/update-post", PostController().updatePost);
+
+postRouter.post("/delete-post", PostController().deletePost);
+
+postRouter.post("/action-post", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+
+  try {
+    const response = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({ _id: response.sub });
+
+    if (user) {
+      const { id } = req.body;
+
+      return res.status(200).json({ msg: "post saved" });
+    }
+  } catch (error) {
+    return res.status(500).json({ errors: error, msg: error.message });
+  }
 });
 
 module.exports = postRouter;

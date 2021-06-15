@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
@@ -6,7 +6,15 @@ import { Link } from "react-router-dom";
 
 const Preview = () => {
   const { draftPost: post } = useSelector((state) => state.PostReducer);
+
+  const [coverImagePath, setCoverImagePath] = useState();
   useEffect(() => {
+    if (post?.image) {
+      setCoverImagePath(`url(${post?.image})`);
+    } else {
+      setCoverImagePath(`url(/images/${post?.prevImage})`);
+    }
+
     const nav = document.getElementById("navbar-section");
     nav.classList.add("hide");
     return () => {
@@ -17,7 +25,7 @@ const Preview = () => {
     <div
       className="container-fluid cover-image position-relative"
       style={{
-        backgroundImage: `url(${post?.image})`
+        backgroundImage: coverImagePath
       }}>
       <div className="preview-tag">preview</div>
       <div className="container pb-3">
@@ -29,9 +37,6 @@ const Preview = () => {
                   {post?.title}
                 </h1>
               </div>
-              <span className="time-text">
-                Posted on {post?.createdAt} by Hardik Thakor
-              </span>
             </div>
             <div className="d-flex my-3">
               {post?.categories?.map((category) => {

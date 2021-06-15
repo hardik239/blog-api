@@ -5,6 +5,7 @@ import { RegisterSchema } from "../utils/Validations";
 import TextError from "../components/TextError";
 import { SendEmail } from "../utils/SendEmail";
 import { VerifyOtpTemplate } from "../utils/Templates";
+import { FaUser } from "react-icons/fa";
 import {
   SweetInfo,
   SweetOtpConfig,
@@ -93,11 +94,11 @@ const Register = () => {
   };
 
   return (
-    <div className="container mb-5">
-      <div className="row mx-1 mt-md-4">
+    <div className="container mb-3">
+      <div className="row mx-1 mt-md-2">
         <div className="col-md-5 login-box mx-auto">
           <div className="mt-3">
-            <img src="./images/avatar.png" alt="avatar" className="avatar" />
+            <FaUser size={100} color="orange" />
           </div>
           <div className="login-title">Sign Up</div>
           <div className="login-form">

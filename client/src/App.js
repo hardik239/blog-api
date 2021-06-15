@@ -19,16 +19,20 @@ import PageNotFound from "./pages/PageNotFound";
 import Preview from "./pages/Preview";
 
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FetchPosts } from "./store/AsyncActions/PostActions";
+import MyPosts from "./pages/MyPosts";
+import EditPost from "./pages/EditPost";
 
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const { isSomeActionPerform } = useSelector((state) => state.PostReducer);
+  const { updateState } = useSelector((state) => state.AuthReducer);
 
   useEffect(() => {
     dispatch(FetchPosts());
-  }, []);
+  }, [isSomeActionPerform, updateState]);
 
   return (
     <>
@@ -36,8 +40,10 @@ function App() {
       <Switch location={location} key={location.pathname}>
         <Route exact path="/" component={Home} />
         {/* <ProtectedRoute path="/single-post" component={SinglePost} /> */}
-        <Route path="/single-post/:id" component={SinglePost} />
+        <Route path="/single-post" component={SinglePost} />
         <ProtectedRoute path="/my-profile" component={MyProfile} />
+        <ProtectedRoute path="/my-posts" component={MyPosts} />
+        <ProtectedRoute path="/edit-post" component={EditPost} />
         <ProtectedRoute path="/create-post" component={CreatePost} />
         <ProtectedRoute path="/saved-post" component={SavePost} />
         <IsAuthenticated path="/sign-in" component={Login} />

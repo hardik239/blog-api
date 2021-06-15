@@ -5,7 +5,8 @@ const initialState = {
   posts: [],
   comments: [],
   draftPost: secureStorage.getItem("draftPost") || null,
-  isPreviewClick: secureStorage.getItem("isPreviewClick") || false
+  isPreviewClick: secureStorage.getItem("isPreviewClick") || false,
+  isSomeActionPerform: false
 };
 
 export default function PostReducer(state = initialState, action) {
@@ -16,13 +17,15 @@ export default function PostReducer(state = initialState, action) {
     case "CLOSE_LOADING":
       return { ...state, loader: false };
 
+    case "TOGGLE_IS_SOME_ACTION_PERFOME":
+      return { ...state, isSomeActionPerform: !state.isSomeActionPerform };
+
     case "SET_POSTS":
       return { ...state, posts: action.posts };
 
     case "SET_DRAFT_POST":
       secureStorage.setItem("draftPost", action.draftPost);
       secureStorage.setItem("isPreviewClick", true);
-      console.log(action);
       return { ...state, draftPost: action.draftPost, isPreviewClick: true };
 
     case "SET_PUBLISH_POST":
@@ -37,6 +40,11 @@ export default function PostReducer(state = initialState, action) {
 
     case "SET_PREVIEW":
       return { ...state, isPreviewClick: action.isPreviewClick };
+
+    case "REMOVE_DRAFT_POST":
+      secureStorage.removeItem("draftPost");
+      secureStorage.removeItem("isPreviewClick");
+      return { ...state, draftPost: null, isPreviewClick: false };
 
     case "SET_COMMETS":
       secureStorage.setItem("comments", action.comments);

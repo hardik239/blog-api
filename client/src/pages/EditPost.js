@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { MinLength, NotEmpty } from "../utils/Validations";
 import swal from "sweetalert";
@@ -21,19 +21,27 @@ const Categories = [
   { id: 8, text: "Sports" }
 ];
 
-const CreatePost = () => {
-  const [content, setContent] = useState("");
+const EditPost = ({ location }) => {
+  const editPost = location.state;
+  const [content, setContent] = useState(JSON.parse(editPost.body));
 
   const dispatch = useDispatch();
   const history = useHistory();
 
   const { token } = useSelector((state) => state.AuthReducer);
 
-  const [currentImage, setCurrentImage] = useState("Choose image");
-  const [previewImage, setPreviewImage] = useState("");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  };
+
+  const [currentImage, setCurrentImage] = useState(editPost.image);
+  const [previewImage, setPreviewImage] = useState();
 
   const [post, setPost] = useState({
-    title: "",
+    title: editPost.title,
     image: ""
   });
 
@@ -71,18 +79,17 @@ const CreatePost = () => {
   const handlePublish = async (e) => {
     e.preventDefault();
 
+    swal({
+      title: "Please Wait",
+      buttons: false
+    });
+
     const selectedCategories = getCheckedBoxes("categorycheckbox");
 
-    const { title, image } = post;
+    let { title, image } = post;
 
     if (NotEmpty(title) && MinLength(content)) {
-      if (!image) {
-        swal({
-          title: "!! Warnign !!",
-          text: "Please Select Cover Image For Your Article",
-          icon: "info"
-        });
-      } else if (selectedCategories.length === 0) {
+      if (selectedCategories.length === 0) {
         swal({
           title: "!! Warnign !!",
           text: "Please Select Atleast One Category.",
@@ -90,17 +97,19 @@ const CreatePost = () => {
         });
       } else {
         const formData = new FormData();
+
+        formData.append("id", editPost._id);
         formData.append("title", title);
         formData.append("body", JSON.stringify(content));
         formData.append("image", image);
-        formData.append("token", token);
-
+        formData.append("prevImageName", editPost.image);
         formData.append("categories", JSON.stringify(selectedCategories));
 
         try {
           const response = await axios.post(
-            "http://localhost:5000/post/create-post",
-            formData
+            "http://localhost:5000/post/update-post",
+            formData,
+            config
           );
           if (response.data.status === "success") {
             swal({
@@ -109,7 +118,6 @@ const CreatePost = () => {
               icon: "success"
             });
             dispatch({ type: "TOGGLE_STATE" });
-
             history.push("/");
           } else if (response.data.status === "warning") {
             swal({
@@ -151,12 +159,12 @@ const CreatePost = () => {
       title: post.title,
       image: previewImage,
       body: content,
+      prevImage: editPost.image,
       file: post.image,
       categories: getCheckedBoxes("categorycheckbox")
     };
 
     dispatch({ type: "SET_DRAFT_POST", draftPost });
-
     window.open("/preview");
   };
 
@@ -186,7 +194,7 @@ const CreatePost = () => {
       quill.setSelection(range.index + 1);
 
       axios
-        .post("http://localhost:5000/post/uploadfiles", formData, config)
+        .post("http://localhost:5000/user/uploadfiles", formData, config)
         .then((response) => {
           if (response.data.success) {
             console.log(response);
@@ -380,6 +388,9 @@ const CreatePost = () => {
                                   name="categorycheckbox"
                                   value={category.text}
                                   id={category.id}
+                                  defaultChecked={editPost.categories.includes(
+                                    category.text
+                                  )}
                                 />
                                 <label
                                   className="form-check-label"
@@ -403,4 +414,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default EditPost;
