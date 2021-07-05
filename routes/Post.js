@@ -17,22 +17,8 @@ postRouter.post("/update-post", PostController().updatePost);
 
 postRouter.post("/delete-post", PostController().deletePost);
 
-postRouter.post("/action-post", async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
+postRouter.post("/save-unsave-post", PostController().saveUnsavePost);
 
-  try {
-    const response = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findOne({ _id: response.sub });
-
-    if (user) {
-      const { id } = req.body;
-
-      return res.status(200).json({ msg: "post saved" });
-    }
-  } catch (error) {
-    return res.status(500).json({ errors: error, msg: error.message });
-  }
-});
+postRouter.post("/fetch-user-saved-posts", PostController().fetchSavedPost);
 
 module.exports = postRouter;

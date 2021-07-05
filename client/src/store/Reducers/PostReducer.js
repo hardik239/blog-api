@@ -3,7 +3,6 @@ import { secureStorage } from "../../utils/SecureStorage";
 const initialState = {
   loader: false,
   posts: [],
-  comments: [],
   draftPost: secureStorage.getItem("draftPost") || null,
   isPreviewClick: secureStorage.getItem("isPreviewClick") || false,
   isSomeActionPerform: false

@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { MinLength, NotEmpty } from "../utils/Validations";
 import swal from "sweetalert";
@@ -97,7 +97,7 @@ const EditPost = ({ location }) => {
         });
       } else {
         const formData = new FormData();
-
+        console.log(content);
         formData.append("id", editPost._id);
         formData.append("title", title);
         formData.append("body", JSON.stringify(content));

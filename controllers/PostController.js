@@ -178,6 +178,33 @@ module.exports = () => {
           .json({ msg: "Something Went Wrong", status: "warning" });
       }
     },
+    fetchSavedPost: async (req, res) => {
+      const token = req.headers.authorization.split(" ")[1];
+
+      try {
+        const response = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ _id: response.sub });
+
+        if (user) {
+          User.findById(user._id)
+            .limit()
+            .populate("savedPosts")
+            .exec((err, posts) => {
+              if (err) {
+                console.log(err);
+                return res
+                  .status(400)
+                  .json({ msg: "Something Went Wrong", status: "warning" });
+              }
+
+              return res.status(200).json({ status: "success", posts });
+            });
+        }
+      } catch (error) {
+        return res.status(500).json({ errors: error, msg: error.message });
+      }
+    },
     updatePost: async (req, res) => {
       const token = req.headers.authorization.split(" ")[1];
 
@@ -292,6 +319,44 @@ module.exports = () => {
         return res
           .status(400)
           .json({ msg: "Something Went Wrong", status: "warning" });
+      }
+    },
+    saveUnsavePost: async (req, res) => {
+      const token = req.headers.authorization.split(" ")[1];
+
+      try {
+        const response = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ _id: response.sub });
+
+        if (user) {
+          const { id } = req.body;
+          const flag = user.savedPosts.includes(id);
+
+          if (flag) {
+            await User.updateOne(
+              { _id: user._id },
+              {
+                $pull: {
+                  savedPosts: id
+                }
+              }
+            );
+            return res.status(200).json({ msg: "post removed" });
+          } else {
+            await User.updateOne(
+              { _id: user._id },
+              {
+                $addToSet: {
+                  savedPosts: id
+                }
+              }
+            );
+            return res.status(200).json({ msg: "post saved" });
+          }
+        }
+      } catch (error) {
+        return res.status(500).json({ errors: error, msg: error.message });
       }
     },
     deletePost: async (req, res) => {

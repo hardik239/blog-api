@@ -46,11 +46,11 @@ module.exports = () => {
     },
     login: (req, res) => {
       if (req.isAuthenticated()) {
-        const { _id, username, email } = req.user;
+        const { _id, username, email, savedPosts } = req.user;
         const token = signToken(_id);
         res.status(200).json({
           isAuthenticated: true,
-          user: { username, email, _id },
+          user: { username, email, _id, savedPosts },
           token
         });
       }

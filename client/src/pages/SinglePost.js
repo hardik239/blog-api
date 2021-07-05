@@ -12,6 +12,7 @@ import {
 
 const SinglePost = ({ location }) => {
   const post = location.state;
+  console.log(post);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state) => state.AuthReducer);
   const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
@@ -45,8 +46,14 @@ const SinglePost = ({ location }) => {
   };
 
   const handleSaveAndUnsave = (name) => {
-    setIsSaveClick(name);
-    dispatch(SaveAndUnsavePost(post._id));
+    if (user.username) {
+      setIsSaveClick(name);
+      dispatch(SaveAndUnsavePost(post._id));
+    } else {
+      history.push({
+        pathname: "/sign-in"
+      });
+    }
   };
 
   return (
@@ -62,7 +69,7 @@ const SinglePost = ({ location }) => {
                   {post?.title}
                 </h1>
                 <div className="d-flex flex-start">
-                  {user._id === post.userId._id ? (
+                  {user._id === (post.userId._id || post.userId) ? (
                     <div className="bookmark-icons d-flex align-items-md-center">
                       <FaEdit
                         size={22}
@@ -78,8 +85,8 @@ const SinglePost = ({ location }) => {
                       />
                     </div>
                   ) : null}
-                  <div className="ms-0 ms-md-auto mt-0">
-                    {isSaveClick === "FaBookmark" ? (
+                  <div className="bookmark-icons ms-0 ms-md-auto mt-0">
+                    {user?.savedPosts?.includes(post._id) ? (
                       <FaBookmark
                         onClick={() => handleSaveAndUnsave("FaRegBookmark")}
                         size={20}

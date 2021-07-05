@@ -154,7 +154,6 @@ const CreatePost = () => {
       file: post.image,
       categories: getCheckedBoxes("categorycheckbox")
     };
-
     dispatch({ type: "SET_DRAFT_POST", draftPost });
 
     window.open("/preview");

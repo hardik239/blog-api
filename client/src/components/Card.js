@@ -30,6 +30,8 @@ const Card = ({ post }) => {
 
   const { user } = useSelector((state) => state.AuthReducer);
 
+  const username = post.userId.username || user.username;
+
   const dispatch = useDispatch();
 
   const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
@@ -42,8 +44,14 @@ const Card = ({ post }) => {
   };
 
   const handleSaveAndUnsave = (name) => {
-    setIsSaveClick(name);
-    dispatch(SaveAndUnsavePost(post._id));
+    if (user.username) {
+      setIsSaveClick(name);
+      dispatch(SaveAndUnsavePost(post._id));
+    } else {
+      history.push({
+        pathname: "/sign-in"
+      });
+    }
   };
 
   return (
@@ -78,7 +86,7 @@ const Card = ({ post }) => {
         <div className="card-footer bg-transparent border-0 user-section  d-flex justify-content-between align-itmes-center">
           <div className="d-flex justify-content-center align-itmes-center">
             <img
-              src={`${avatarGenerateUrl}${post.userId.username}`}
+              src={`${avatarGenerateUrl}${username}`}
               style={{
                 width: "30px",
                 height: "30px",
@@ -88,7 +96,7 @@ const Card = ({ post }) => {
               alt="avatar"
             />
             <div className="">
-              <div style={{ fontSize: "12px" }}>{post?.userId.username}</div>
+              <div style={{ fontSize: "12px" }}>{username}</div>
               <div style={{ fontSize: "10px" }}>
                 {moment(post.createdAt).fromNow()}
               </div>
@@ -96,7 +104,7 @@ const Card = ({ post }) => {
           </div>
           <div className="bookmark-icons mt-2">
             <div className="d-flex align-items-center">
-              {isSaveClick === "FaBookmark" ? (
+              {user?.savedPosts?.includes(post._id) ? (
                 <FaBookmark
                   onClick={() => handleSaveAndUnsave("FaRegBookmark")}
                   size={20}
