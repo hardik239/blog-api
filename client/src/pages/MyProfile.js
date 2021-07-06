@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import swal from "sweetalert";
 
 const MyProfile = () => {
+  const { username, email } = useSelector((state) => state.AuthReducer.user);
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -36,12 +37,12 @@ const MyProfile = () => {
           <div className="row py-3 text-white">
             <div className="col-3 col-md-6 text-main fw-bold">Name</div>
             <div className="col-1">:</div>
-            <div className="col-8 col-md-5">Hardik</div>
+            <div className="col-8 col-md-5">{username}</div>
           </div>
           <div className="row py-2 text-white">
             <div className="col-3 col-md-6 text-main fw-bold">Email</div>
             <div className="col-1">:</div>
-            <div className="col-8 col-md-5">hardikthakor@gmail.com</div>
+            <div className="col-8 col-md-5">{email}</div>
           </div>
           <hr style={{ border: "1px solid white" }} />
           <div className="div text-center mb-3">
