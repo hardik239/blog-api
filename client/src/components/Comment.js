@@ -58,6 +58,14 @@ const Comment = ({ postId }) => {
 
   const postCommentHandle = async (e) => {
     e.preventDefault();
+    if (postComment === "") {
+      swal({
+        title: "!! Warnign !!",
+        text: "Please Write Something In Comment Box",
+        icon: "info"
+      });
+      return;
+    }
     try {
       const res = await axios.post(
         "http://localhost:5000/post/post-comment",

@@ -138,7 +138,6 @@ module.exports = () => {
     },
     fetchAllPost: (req, res) => {
       Post.find({})
-        .limit(6)
         .populate("userId")
         .exec((err, posts) => {
           if (err) {

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import swal from "sweetalert";
-import Store from "../store";
 
 const Navbar = () => {
   const { username } = useSelector((state) => state.AuthReducer.user);
@@ -59,7 +58,7 @@ const Navbar = () => {
                   <li className="nav-item">
                     <Link
                       className="nav-link text-white me-md-4"
-                      to="/single-post">
+                      to="/filter-post">
                       Articles
                     </Link>
                   </li>

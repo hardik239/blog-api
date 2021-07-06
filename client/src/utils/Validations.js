@@ -26,6 +26,14 @@ export const RegisterSchema = Yup.object({
     )
 });
 
+export const ContactSchema = Yup.object({
+  name: Yup.string().required("This Field Is Required"),
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("This Field Is Required"),
+  message: Yup.string().required("This Field Is Required")
+});
+
 export const NotEmpty = (input) => {
   if (input.trim().length > 0) return true;
   else {

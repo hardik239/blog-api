@@ -76,7 +76,7 @@ export const postLogin = (UserData, history, submitProps) => {
       } else {
         swal({
           title: "!! Oppss !!",
-          text: error.message,
+          text: "Something Went Wrong...Login Again",
           icon: "info"
         });
       }

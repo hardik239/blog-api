@@ -31,7 +31,7 @@ const initialValue = {
 };
 
 const Register = () => {
-  const [otpStatusText, setOtpStatusText] = useState("Send Otp");
+  const [otpStatusText, setOtpStatusText] = useState("Register");
 
   const history = useHistory();
 

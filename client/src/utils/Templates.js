@@ -5,12 +5,12 @@ let subject = "";
 let toEmail = "";
 
 export const ContactTemplate = (Details) => {
-  subject = `New message from ${Details.username}`;
+  subject = `New message from ${Details.name}`;
 
   message = `
         <div style="font-family: 'times new roman', times, serif;">
             <h1 style="font-size: 18pt;">Hello sir,</h1>
-            <p style="font-size: 14pt;">You got a new message from ${Details.username}:</p>
+            <p style="font-size: 14pt;">You got a new message from ${Details.name}:</p>
             <p style="font-size: 14pt;">${Details.message}</p>
             <p style="font-size: 14pt;">you can contact me on ${Details.email}</p>
         </div>
