@@ -101,3 +101,22 @@ export const SaveAndUnsavePost = (id) => {
     }
   };
 };
+
+export const FetchComment = (id) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/post/fetch-comment",
+        { id: id },
+        config
+      );
+      console.log(res);
+    } catch (error) {
+      swal({
+        title: "!! Warnign !!",
+        text: error.message,
+        icon: "info"
+      });
+    }
+  };
+};

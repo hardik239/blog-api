@@ -7,16 +7,11 @@ const CommentsSchema = new mongoose.Schema(
       required: true
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true
-    },
-    replies: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comments"
     }
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Comments", CommentsSchema);
+module.exports = mongoose.model("Comment", CommentsSchema);

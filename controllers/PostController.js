@@ -1,8 +1,11 @@
 const passport = require("passport");
 const passportConfig = require("../passport");
 const JWT = require("jsonwebtoken");
+
 const User = require("../models/User");
 const Post = require("../models/Post");
+const Comments = require("../models/Comments");
+
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
@@ -388,6 +391,84 @@ module.exports = () => {
         }
       } catch (error) {
         return res.status(500).json({ errors: error, msg: error.message });
+      }
+    },
+    FetchPostComment: async (req, res) => {
+      const token = req.headers.authorization.split(" ")[1];
+
+      try {
+        const response = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ _id: response.sub });
+
+        if (user) {
+          const { postId, comment } = req.body;
+          const data = await Comments.create({
+            comment,
+            author: user.username
+          });
+          const temp = await Post.updateOne(
+            { _id: postId },
+            {
+              $addToSet: {
+                comments: data._id
+              }
+            }
+          );
+          if (temp.nModified) {
+            return res
+              .status(200)
+              .json({ msg: "Comment Posted Successfully", status: "success" });
+          } else {
+            return res
+              .status(400)
+              .json({ msg: "Something Went Wrong", status: "warning" });
+          }
+        } else {
+          return res
+            .status(400)
+            .json({ msg: "Something Went Wrong", status: "warning" });
+        }
+      } catch (error) {
+        console.log(error);
+        return res
+          .status(400)
+          .json({ msg: "Something Went Wrong", status: "warning" });
+      }
+    },
+    PostComment: async (req, res) => {
+      const token = req.headers.authorization.split(" ")[1];
+
+      try {
+        const response = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ _id: response.sub });
+
+        if (user) {
+          const { id } = req.body;
+          Post.findById(id)
+            .populate("comments")
+            .exec((err, post) => {
+              if (err) {
+                console.log(err);
+                return res
+                  .status(400)
+                  .json({ msg: "Something Went Wrong", status: "warning" });
+              }
+              return res
+                .status(200)
+                .json({ status: "success", comments: post.comments });
+            });
+        } else {
+          return res
+            .status(400)
+            .json({ msg: "Something Went Wrong", status: "warning" });
+        }
+      } catch (error) {
+        console.log(error);
+        return res
+          .status(400)
+          .json({ msg: "Something Went Wrong", status: "warning" });
       }
     }
   };
