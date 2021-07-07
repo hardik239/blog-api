@@ -191,7 +191,10 @@ module.exports = () => {
         if (user) {
           User.findById(user._id)
             .limit()
-            .populate("savedPosts")
+            .populate({
+              path: "savedPosts",
+              populate: { path: "userId" }
+            })
             .exec((err, posts) => {
               if (err) {
                 console.log(err);

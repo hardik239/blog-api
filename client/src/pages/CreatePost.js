@@ -171,7 +171,7 @@ const CreatePost = () => {
       let file = input.files[0];
       let formData = new FormData();
 
-      let fileName = file.name;
+      // let fileName = file.name;
       formData.append("file", file);
       const config = {
         header: { "content-type": "multipart/form-data" }
@@ -188,7 +188,6 @@ const CreatePost = () => {
         .post("http://localhost:5000/post/uploadfiles", formData, config)
         .then((response) => {
           if (response.data.success) {
-            console.log(response);
             quill.deleteText(range.index, 1);
 
             quill.insertEmbed(

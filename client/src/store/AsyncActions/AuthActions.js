@@ -52,7 +52,7 @@ export const postLogin = (UserData, history, submitProps) => {
 
       if (res.status === 200) {
         swal({
-          title: "!! Welcome Back !!",
+          title: "!! Welcome !!",
           text: "Login Successfull",
           icon: "success"
         });

@@ -5,6 +5,7 @@ import { SendEmail } from "../utils/SendEmail";
 import { SweetContact, SweetWait, SweetWrong } from "../utils/SweetAlert";
 import { ContactTemplate } from "../utils/Templates";
 import { ContactSchema } from "../utils/Validations";
+import { FaUser } from "react-icons/fa";
 
 const initialValue = {
   name: "",
@@ -33,7 +34,7 @@ const Contact = () => {
       <div className="row mx-1">
         <div className="col-md-5 login-box mx-auto">
           <div className="mt-3">
-            <img src="./images/avatar.png" alt="avatar" className="avatar" />
+            <FaUser size={100} color="orange" />
           </div>
           <div className="login-title">Contcat Us</div>
           <div className="login-form">

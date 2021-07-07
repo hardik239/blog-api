@@ -16,8 +16,8 @@ const SinglePost = ({ location }) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state) => state.AuthReducer);
-  const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
   const dispatch = useDispatch();
+  const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
 
   const history = useHistory();
 
@@ -47,8 +47,8 @@ const SinglePost = ({ location }) => {
   };
 
   const handleSaveAndUnsave = (name) => {
+    setIsSaveClick(name);
     if (user.username) {
-      setIsSaveClick(name);
       dispatch(SaveAndUnsavePost(post._id));
     } else {
       history.push({

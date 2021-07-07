@@ -180,7 +180,7 @@ const EditPost = ({ location }) => {
       let file = input.files[0];
       let formData = new FormData();
 
-      let fileName = file.name;
+      // let fileName = file.name;
       formData.append("file", file);
       const config = {
         header: { "content-type": "multipart/form-data" }

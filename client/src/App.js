@@ -18,7 +18,6 @@ import IsAuthenticated from "./authRoutes/IsAuthenticate";
 import PageNotFound from "./pages/PageNotFound";
 import Preview from "./pages/Preview";
 
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchPosts } from "./store/AsyncActions/PostActions";
 import MyPosts from "./pages/MyPosts";
@@ -40,9 +39,8 @@ function App() {
       <Navbar />
       <Switch location={location} key={location.pathname}>
         <Route exact path="/" component={Home} />
-        {/* <ProtectedRoute path="/single-post" component={SinglePost} /> */}
         <Route path="/single-post" component={SinglePost} />
-        <Route path="/filter-post" component={FilterPost} />
+        <ProtectedRoute path="/filter-post" component={FilterPost} />
         <ProtectedRoute path="/my-profile" component={MyProfile} />
         <ProtectedRoute path="/my-posts" component={MyPosts} />
         <ProtectedRoute path="/edit-post" component={EditPost} />

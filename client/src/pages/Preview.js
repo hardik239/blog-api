@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
-import { Link } from "react-router-dom";
 
 const Preview = () => {
   const { draftPost: post } = useSelector((state) => state.PostReducer);

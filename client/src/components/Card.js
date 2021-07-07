@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { FaBookmark, FaRegBookmark, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  DeletePost,
-  SaveAndUnsavePost
-} from "../store/AsyncActions/PostActions";
+import { SaveAndUnsavePost } from "../store/AsyncActions/PostActions";
 
 function extractContent(html) {
   return trimDescription(
@@ -44,8 +41,8 @@ const Card = ({ post }) => {
   };
 
   const handleSaveAndUnsave = (name) => {
+    setIsSaveClick(name);
     if (user.username) {
-      setIsSaveClick(name);
       dispatch(SaveAndUnsavePost(post._id));
     } else {
       history.push({
@@ -96,9 +93,12 @@ const Card = ({ post }) => {
               alt="avatar"
             />
             <div className="">
-              <div style={{ fontSize: "12px" }}>{username}</div>
+              <div style={{ fontSize: "12px" }}>
+                {username}
+                {username === user.username ? " (You)" : ""}
+              </div>
               <div style={{ fontSize: "10px" }}>
-                {moment(post.createdAt).fromNow()}
+                {moment(post.createdAt).format("MMM-DD")}
               </div>
             </div>
           </div>

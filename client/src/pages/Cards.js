@@ -16,7 +16,7 @@ const Cards = () => {
         </div>
       ) : (
         <div className="row g-2">
-          {posts?.map((post) => {
+          {posts?.slice(0, 5).map((post) => {
             return <Card key={post._id} post={post} />;
           })}
         </div>

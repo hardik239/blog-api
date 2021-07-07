@@ -41,7 +41,7 @@ export const SweetSuccess = (success) => {
 
 export const SweetWelcome = (success) => {
   swal({
-    title: "!! Welcome Back !!",
+    title: "!! Welcome !!",
     text: success,
     icon: "success"
   });

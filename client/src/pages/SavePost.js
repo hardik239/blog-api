@@ -52,11 +52,11 @@ const SavePost = () => {
         <div className="row mt-5 mt-md-2 g-0 mx-2 mx-md-5">
           <div className="col-md-5 mx-auto">
             <img
-              src="/images/noPost.svg"
-              className="img-fluid"
+              src="/images/noCategoryPost.svg"
+              className="img-fluid px-5 mt-5"
               alt="No Posts"
             />
-            <div className="text-center mt-3 fs-2 fw-bold text-main">
+            <div className="text-center mt-5 fs-2 fw-bold">
               You Don't Have Any Post
             </div>
           </div>

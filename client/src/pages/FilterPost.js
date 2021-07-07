@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import Card from "../components/Card";
 
@@ -7,72 +6,70 @@ const categories = [
   "Technology",
   "Travel",
   "Fashion",
-  "Food",
-  "Music",
   "LifeStyle",
-  "Fitness",
   "Sports",
   "News",
   "Movie",
   "Personal",
-  "Bussiness",
-  "Gaming"
+  "All"
 ];
 
 const FilterPost = () => {
-  const [userCategory, setUserCategory] = useState("all");
-  const [isLoading, setIsLoading] = useState(true);
-
   const { posts } = useSelector((state) => state.PostReducer);
   const [userCategoriesPost, setUserCategoriesPost] = useState(posts);
 
-  const handleCategoryChange = (e) => setUserCategory(e.target.value);
-
   useEffect(() => {
-    let tempArray = posts.filter((post) => {
-      return post.categories.includes(userCategory);
-    });
-    setIsLoading(false);
-    setUserCategoriesPost(tempArray);
-  }, [userCategory]);
+    setUserCategoriesPost(posts);
+  }, []);
+
+  const handleCategoryChange = (category) => {
+    if (category === "All") setUserCategoriesPost(posts);
+    else {
+      let tempArray = posts.filter((post) => {
+        return post.categories.includes(category);
+      });
+      setUserCategoriesPost(tempArray);
+    }
+  };
 
   return (
     <div className="container mt-5 pt-5">
       <div className="row">
-        <div className="col-12 col-md-6 mx-auto">
-          <select
-            onChange={handleCategoryChange}
-            name="userCategory"
-            defaultValue="all"
-            className="form-select form-select-lg mb-3"
-            aria-label=".form-select-lg example">
-            <option value="all" disabled>
-              Choose Category
-            </option>
-            {categories.map((category) => {
-              return (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              );
-            })}
-          </select>
+        <div className="col-12 col-md-10 mx-auto d-flex justify-content-between flex-wrap">
+          {categories.map((category) => {
+            return (
+              <button
+                key={category}
+                className="btn m-1 btn-outline-primary"
+                onClick={() => handleCategoryChange(category)}>
+                {category}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {userCategoriesPost.length === 0 && userCategory !== "all" ? (
-        <div className="text-center mt-5 fw-bold fs-1">No Result Found</div>
-      ) : userCategory !== "all" ? (
-        <div className="row mt-5 g-2">
-          {userCategoriesPost?.map((post) => {
+      <div className="row mt-5 g-2">
+        {userCategoriesPost.length === 0 ? (
+          <>
+            <div className="mt-2 d-flex justify-content-center align-items-center">
+              <img
+                src="/images/noCategoryPost.svg"
+                style={{ maxHeight: "25rem", maxWidth: "20rem" }}
+                alt="no data found...."
+                className="px-5 px-md-0"
+              />
+            </div>
+            <h6 className="text-center fs-2 fw-bold mt-3">
+              Ups!... no results found
+            </h6>
+          </>
+        ) : (
+          userCategoriesPost?.map((post) => {
             return <Card key={post._id} post={post} />;
-          })}
-        </div>
-      ) : (
-        <div className="text-center mt-5 fw-bold fs-1">
-          No Category Selected
-        </div>
-      )}
+          })
+        )}
+      </div>
     </div>
   );
 };
