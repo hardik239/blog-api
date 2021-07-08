@@ -4,10 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node swagger.js",
-    "start-gendoc": "node swagger.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -18,7 +15,6 @@
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.13",
-    "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

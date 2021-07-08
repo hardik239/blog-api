@@ -1,5 +1,6 @@
 const JWT = require("jsonwebtoken");
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const signToken = (userID) => {
   return JWT.sign(
@@ -65,6 +66,25 @@ module.exports = () => {
           return res.status(200).json({ info: "User Exits" });
         } else {
           return res.status(200).json({ success: "User Does not Exits" });
+        }
+      } catch (error) {
+        return res.status(200).json({ error: "Something Went Wrong..." });
+      }
+    },
+    forgotPassword: async (req, res) => {
+      try {
+        const { email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const isUpdated = await User.updateOne(
+          { email },
+          { password: hashedPassword }
+        );
+
+        if (isUpdated.nModified) {
+          return res
+            .status(200)
+            .json({ success: "Password Reset Successfully" });
         }
       } catch (error) {
         return res.status(200).json({ error: "Something Went Wrong..." });

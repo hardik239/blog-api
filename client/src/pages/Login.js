@@ -65,7 +65,7 @@ const Login = () => {
               </Form>
             </Formik>
             <div className="text-center mb-2 form-last-text">
-              <Link to="/sign-up">Forgot Password ?</Link>
+              <Link to="/forgot-password">Forgot Password ?</Link>
             </div>
             <div className="text-center mb-2 form-last-text">
               <Link to="/sign-up">Don't Have Account ?</Link>

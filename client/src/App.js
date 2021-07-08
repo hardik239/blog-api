@@ -23,6 +23,7 @@ import { FetchPosts } from "./store/AsyncActions/PostActions";
 import MyPosts from "./pages/MyPosts";
 import EditPost from "./pages/EditPost";
 import FilterPost from "./pages/FilterPost";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const location = useLocation();
@@ -49,6 +50,7 @@ function App() {
         <IsAuthenticated path="/sign-in" component={Login} />
         <IsAuthenticated path="/sign-up" component={Register} />
         <Route path="/contact" component={Contact} />
+        <Route path="/forgot-password" component={ForgotPassword} />
         <PrivateRoute path="/preview" component={Preview} />
         <Route path="/*" component={PageNotFound} />
       </Switch>

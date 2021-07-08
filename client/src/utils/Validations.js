@@ -8,9 +8,31 @@ export const LoginSchema = Yup.object({
   password: Yup.string()
     .required("This Field Is Required")
     .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      "password must contain 8 characters, one uppercase, one lowercase, one number and one special case character"
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
+      "password must be 8 to 20 characters long, one uppercase, one lowercase, one number and one special case character"
     )
+});
+
+export const PasswordSchema = Yup.object({
+  password: Yup.string()
+    .required("Enter Your New Password")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/,
+      "password must be 8 to 20 characters long, one uppercase, one lowercase, one number and one special case character"
+    ),
+  cnfPassword: Yup.string().test(
+    "passwords-match",
+    "Passwords must match",
+    function (value) {
+      return this.parent.password === value;
+    }
+  )
+});
+
+export const EmailSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("This Field Is Required")
 });
 
 export const RegisterSchema = Yup.object({

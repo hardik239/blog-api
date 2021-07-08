@@ -59,8 +59,6 @@ export const ResetPasswordTemplate = (Details) => {
 
   toEmail = Details.email;
 
-  console.log(message);
-
   return {
     subject,
     toEmail,

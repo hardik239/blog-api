@@ -1,6 +1,5 @@
 const passport = require("passport");
 const passportConfig = require("../passport");
-const JWT = require("jsonwebtoken");
 
 const User = require("../models/User");
 const Post = require("../models/Post");
@@ -9,7 +8,6 @@ const Comments = require("../models/Comments");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
-
 const formidable = require("formidable");
 const uniqueSlug = require("unique-slug");
 

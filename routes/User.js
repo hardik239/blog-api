@@ -14,4 +14,6 @@ userRouter.post(
 
 userRouter.post("/userexist", UserController().userExist);
 
+userRouter.post("/forgot-password", UserController().forgotPassword);
+
 module.exports = userRouter;

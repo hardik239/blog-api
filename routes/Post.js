@@ -1,11 +1,7 @@
 const express = require("express");
-// const User = require("../models/User");
-// const jwt = require("jsonwebtoken");
 const postRouter = express.Router();
 
 const PostController = require("../controllers/PostController");
-// const Post = require("../models/Post");
-// const Comments = require("../models/Comments");
 
 postRouter.post("/uploadfiles", PostController().uploadFile);
 

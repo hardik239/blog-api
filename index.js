@@ -3,14 +3,10 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const userRouter = require("./routes/User");
-const postRouter = require("./routes/Post");
+const router = require("./routes/index");
 const PORT = process.env.PORT || 5000;
 
-const uniqueSlug = require("unique-slug");
-
 const app = express();
-// console.log(uniqueSlug("/How To Create Website Using Html Css/ "));
 
 app.use(
   cors({
@@ -20,22 +16,26 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use("/user", userRouter);
-app.use("/post", postRouter);
+app.use(router);
 
-mongoose
-  .connect(process.env.MONGO_DB, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-  })
-  .then(() => {
-    console.log("Database connected...");
-  })
-  .catch((err) => {
-    console.log("Connection failed...");
-  });
+function connectToDB() {
+  mongoose
+    .connect(process.env.MONGO_DB, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false
+    })
+    .then(() => {
+      console.log("Database connected...");
+    })
+    .catch((err) => {
+      console.log("Connection failed...");
+      connectToDB();
+    });
+}
+
+connectToDB();
 
 app.listen(PORT, () => {
   console.log("express server started");
