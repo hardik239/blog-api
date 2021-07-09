@@ -19,8 +19,8 @@ postRouter.post("/save-unsave-post", PostController().saveUnsavePost);
 
 postRouter.post("/fetch-user-saved-posts", PostController().fetchSavedPost);
 
-postRouter.post("/post-comment", PostController().FetchPostComment);
+postRouter.post("/post-comment", PostController().PostComment);
 
-postRouter.post("/fetch-comment", PostController().PostComment);
+postRouter.post("/fetch-comment", PostController().FetchPostComment);
 
 module.exports = postRouter;

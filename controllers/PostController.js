@@ -393,7 +393,7 @@ module.exports = () => {
         return res.status(500).json({ errors: error, msg: error.message });
       }
     },
-    FetchPostComment: async (req, res) => {
+    PostComment: async (req, res) => {
       const token = req.headers.authorization.split(" ")[1];
 
       try {
@@ -436,36 +436,22 @@ module.exports = () => {
           .json({ msg: "Something Went Wrong", status: "warning" });
       }
     },
-    PostComment: async (req, res) => {
-      const token = req.headers.authorization.split(" ")[1];
-
+    FetchPostComment: async (req, res) => {
       try {
-        const response = jwt.verify(token, process.env.JWT_SECRET);
-
-        const user = await User.findOne({ _id: response.sub });
-
-        if (user) {
-          const { id } = req.body;
-          Post.findById(id)
-            .populate("comments")
-            .exec((err, post) => {
-              if (err) {
-                console.log(err);
-                return res
-                  .status(400)
-                  .json({ msg: "Something Went Wrong", status: "warning" });
-              }
+        const { id } = req.body;
+        Post.findById(id)
+          .populate("comments")
+          .exec((err, post) => {
+            if (err) {
               return res
-                .status(200)
-                .json({ status: "success", comments: post.comments });
-            });
-        } else {
-          return res
-            .status(400)
-            .json({ msg: "Something Went Wrong", status: "warning" });
-        }
+                .status(400)
+                .json({ msg: "Something Went Wrong", status: "warning" });
+            }
+            return res
+              .status(200)
+              .json({ status: "success", comments: post.comments });
+          });
       } catch (error) {
-        console.log(error);
         return res
           .status(400)
           .json({ msg: "Something Went Wrong", status: "warning" });

@@ -8,8 +8,7 @@ const signToken = (userID) => {
       iss: "UltimateBlog",
       sub: userID
     },
-    `${process.env.JWT_SECRET}`,
-    { expiresIn: "24d" }
+    `${process.env.JWT_SECRET}`
   );
 };
 

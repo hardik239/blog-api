@@ -24,11 +24,9 @@ const Comment = ({ postId }) => {
 
   const FetchComment = async (id) => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/post/fetch-comment",
-        { id: id },
-        config
-      );
+      const res = await axios.post("http://localhost:5000/post/fetch-comment", {
+        id: id
+      });
       if (res.status === 200) {
         setComments(res.data.comments);
         setIsLoading(false);
