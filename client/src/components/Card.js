@@ -60,7 +60,7 @@ const Card = ({ post }) => {
           borderRadius: "15px"
         }}>
         <img
-          src={`/images/${post.image}`}
+          src={`${post.image}`}
           className="card-img-top mb-3 "
           onClick={redirectToDetailPost}
           style={{

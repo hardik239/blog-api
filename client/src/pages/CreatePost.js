@@ -96,7 +96,10 @@ const CreatePost = () => {
         formData.append("token", token);
 
         formData.append("categories", JSON.stringify(selectedCategories));
-
+        swal({
+          title: "Please Wait",
+          buttons: false
+        });
         try {
           const response = await axios.post(
             "http://localhost:5000/post/create-post",
@@ -168,11 +171,10 @@ const CreatePost = () => {
     input.click();
 
     input.onchange = async () => {
-      let file = input.files[0];
+      let image = input.files[0];
       let formData = new FormData();
 
-      // let fileName = file.name;
-      formData.append("file", file);
+      formData.append("image", image);
       const config = {
         header: { "content-type": "multipart/form-data" }
       };
@@ -190,11 +192,7 @@ const CreatePost = () => {
           if (response.data.success) {
             quill.deleteText(range.index, 1);
 
-            quill.insertEmbed(
-              range.index,
-              "image",
-              "/images/" + response.data.url
-            );
+            quill.insertEmbed(range.index, "image", response.data.url);
             quill.setSelection(range.index + 1);
           } else {
             quill.deleteText(range.index, 0);

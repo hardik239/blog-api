@@ -69,7 +69,8 @@ const Comment = ({ postId }) => {
         "http://localhost:5000/post/post-comment",
         {
           postId,
-          comment: postComment
+          comment: postComment,
+          author: user.username
         },
         config
       );
@@ -145,7 +146,10 @@ const Comment = ({ postId }) => {
                   />
                 </div>
                 <div className="ms-3">
-                  <div className="fw-bold">{comment.author}</div>
+                  <div className="fw-bold">
+                    {comment.author}
+                    {comment.author === user.username ? " (You)" : ""}
+                  </div>
                   {comment.comment}
                 </div>
               </div>

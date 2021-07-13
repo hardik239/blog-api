@@ -42,6 +42,10 @@ export const DeletePost = (id, history) => {
       dangerMode: true
     }).then(async (willDelete) => {
       if (willDelete) {
+        swal({
+          title: "Please Wait",
+          buttons: false
+        });
         try {
           const res = await axios.post(
             "http://localhost:5000/post/delete-post",

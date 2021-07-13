@@ -14,125 +14,62 @@ const uniqueSlug = require("unique-slug");
 module.exports = () => {
   return {
     createPost: async (req, res) => {
-      const form = formidable({ multiples: true });
+      try {
+        let { title, body, token, categories } = req.body;
+        const filename = req.file.location;
+        const response = jwt.verify(token, process.env.JWT_SECRET);
 
-      form.parse(req, async (error, fields, files) => {
-        let { title, body, token, categories } = fields;
+        const user = await User.findOne({ _id: response.sub });
 
-        try {
-          const response = jwt.verify(token, process.env.JWT_SECRET);
+        if (user) {
+          categories = JSON.parse(categories);
+          try {
+            let slug =
+              title.toLowerCase().split(" ").join("-") +
+              "-" +
+              uniqueSlug(`${user._id}${Date.now().toString()}`);
 
-          const user = await User.findOne({ _id: response.sub });
-
-          if (user) {
-            categories = JSON.parse(categories);
-
-            if (Object.keys(files).length === 0) {
-              return res
-                .status(400)
-                .json({ msg: "Cover Image is required", status: "warning" });
-            } else {
-              const { type } = files.image;
-              const split = type.split("/");
-              const extension = split[1].toLowerCase();
-              if (
-                extension !== "jpg" &&
-                extension !== "jpeg" &&
-                extension !== "png"
-              ) {
-                res.status(400).json({
-                  msg: `${extension} is not a valid extension`,
-                  status: "warning"
-                });
-              } else {
-                files.image.name = uuidv4() + "." + extension;
-
-                const newPath =
-                  __dirname + `/../client/public/images/${files.image.name}`;
-
-                fs.copyFile(files.image.path, newPath, async (error) => {
-                  if (!error) {
-                    try {
-                      let slug =
-                        title.toLowerCase().split(" ").join("-") +
-                        "-" +
-                        uniqueSlug(`${user._id}${Date.now().toString()}`);
-
-                      const response = await Post.create({
-                        title,
-                        body,
-                        image: files.image.name,
-                        userId: user._id,
-                        categories,
-                        slug
-                      });
-                      return res.status(200).json({
-                        msg: "Your post Published successfully",
-                        status: "success",
-                        response
-                      });
-                    } catch (error) {
-                      return res
-                        .status(400)
-                        .json({ status: "error", msg: error.message });
-                    }
-                  } else {
-                    res
-                      .status(400)
-                      .json({ msg: "Something Went Wrong", status: "error" });
-                  }
-                });
-              }
-            }
-          } else {
-            res
+            const response = await Post.create({
+              title,
+              body,
+              image: filename,
+              userId: user._id,
+              categories,
+              slug
+            });
+            return res.status(200).json({
+              msg: "Your post Published successfully",
+              status: "success",
+              response
+            });
+          } catch (error) {
+            return res
               .status(400)
-              .json({ msg: "Something Went Wrong", status: "error" });
+              .json({ status: "error", msg: error.message });
           }
-        } catch (error) {
-          return res.status(400).json({
-            msg: error.message,
-            status: "warning"
-          });
+        } else {
+          res
+            .status(400)
+            .json({ msg: "Something Went Wrong", status: "error" });
         }
-      });
+      } catch (error) {
+        return res.status(400).json({
+          msg: error.message,
+          status: "warning"
+        });
+      }
     },
     uploadFile: (req, res) => {
-      const form = formidable({ multiples: true });
-
-      form.parse(req, (error, fields, files) => {
-        if (Object.keys(files).length === 0) {
-          return res.json({ success: false, msg: "Image is required" });
-        } else {
-          const { type } = files.file;
-          const split = type.split("/");
-          const extension = split[1].toLowerCase();
-          if (
-            extension !== "jpg" &&
-            extension !== "jpeg" &&
-            extension !== "png"
-          ) {
-            return res.json({
-              success: false,
-              msg: `${extension} is not a valid extension`
-            });
-          } else {
-            files.file.name = uuidv4() + "." + extension;
-            const newPath =
-              __dirname + `/../client/public/images/${files.file.name}`;
-            fs.copyFile(files.file.path, newPath, async (error) => {
-              if (!error) {
-                return res.status(200).json({
-                  success: true,
-                  url: files.file.name
-                });
-              } else {
-                return res.json({ success: false, err });
-              }
-            });
-          }
+      try {
+        if (req.file) {
+          return res.status(200).json({
+            success: true,
+            url: req.file.location
+          });
         }
-      });
+      } catch (error) {
+        return res.status(200).json({ success: false, error });
+      }
     },
     fetchAllPost: (req, res) => {
       Post.find({})
@@ -402,10 +339,10 @@ module.exports = () => {
         const user = await User.findOne({ _id: response.sub });
 
         if (user) {
-          const { postId, comment } = req.body;
+          const { postId, comment, author } = req.body;
           const data = await Comments.create({
             comment,
-            author: user.username
+            author
           });
           const temp = await Post.updateOne(
             { _id: postId },
@@ -447,9 +384,11 @@ module.exports = () => {
                 .status(400)
                 .json({ msg: "Something Went Wrong", status: "warning" });
             }
-            return res
-              .status(200)
-              .json({ status: "success", comments: post.comments });
+            if (post.comments) {
+              return res
+                .status(200)
+                .json({ status: "success", comments: post.comments });
+            }
           });
       } catch (error) {
         return res

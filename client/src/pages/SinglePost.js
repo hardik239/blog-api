@@ -17,15 +17,18 @@ const SinglePost = ({ location }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state) => state.AuthReducer);
   const dispatch = useDispatch();
-  const [isSaveClick, setIsSaveClick] = useState("FaRegBookmark");
+  const [_, setIsSaveClick] = useState("FaRegBookmark");
 
   const history = useHistory();
 
   useEffect(() => {
-    if (post._id) {
+    if (!post?._id) {
+      history.push("/");
+    }
+    if (post?._id) {
       setIsLoading(false);
     }
-  }, [post._id]);
+  }, [post?._id]);
 
   if (isLoading) {
     return (
@@ -60,7 +63,7 @@ const SinglePost = ({ location }) => {
   return (
     <div
       className="container-fluid cover-image"
-      style={{ background: `url(/images/${post.image})` }}>
+      style={{ background: `url(${post.image})` }}>
       <div className="container">
         <div className="row mb-5">
           <div className="col-12 col-md-10 cover-margin p-4 card mx-auto">

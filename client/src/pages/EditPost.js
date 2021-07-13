@@ -177,11 +177,11 @@ const EditPost = ({ location }) => {
     input.click();
 
     input.onchange = async () => {
-      let file = input.files[0];
+      let image = input.files[0];
       let formData = new FormData();
 
-      // let fileName = file.name;
-      formData.append("file", file);
+      formData.append("image", image);
+
       const config = {
         header: { "content-type": "multipart/form-data" }
       };
@@ -194,17 +194,12 @@ const EditPost = ({ location }) => {
       quill.setSelection(range.index + 1);
 
       axios
-        .post("http://localhost:5000/user/uploadfiles", formData, config)
+        .post("http://localhost:5000/post/uploadfiles", formData, config)
         .then((response) => {
           if (response.data.success) {
-            console.log(response);
             quill.deleteText(range.index, 1);
 
-            quill.insertEmbed(
-              range.index,
-              "image",
-              "/images/" + response.data.url
-            );
+            quill.insertEmbed(range.index, "image", response.data.url);
             quill.setSelection(range.index + 1);
           } else {
             quill.deleteText(range.index, 0);
